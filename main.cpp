@@ -8,7 +8,7 @@
 using namespace std;
 
 //хеш-функция
-int hashFunction(string key, int mod) {
+int hash_function(string key, int mod) {
 	int hash = 0;	//наш хеш от ключа key по модулю mod
 	int k = 1;		//простой множитель
 	//перебираем все символы ключа
@@ -28,11 +28,11 @@ int hashFunction(string key, int mod) {
 }
 
 //структура хеш-таблицы
-struct hashTable {
+struct hash_table {
 	vector<string>* table;	//таблица представляет собой массив[N] списков(векторов)
 	int size;				//размер таблицы (кол-во сегментов)
 
-	hashTable(int _size) {
+	hash_table(int _size) {
 		cout << "Создание таблицы...\n";
 		size = _size;
 		table = new vector<string>[size];
@@ -40,7 +40,7 @@ struct hashTable {
 
 	//функция пытается добавить ключ key в таблицу
 	int add(string key) {
-		int hash = hashFunction(key, size); //получаем хеш от строки (он же индекс списка в массиве table)
+		int hash = hash_function(key, size); //получаем хеш от строки (он же индекс списка в массиве table)
 		bool has = false;
 		for (size_t i = 0; i < table[hash].size(); ++i) { //идем по списку этого хеша
 			if (table[hash][i] == key) { //если нашли совпадение
@@ -74,11 +74,11 @@ struct hashTable {
 			}
 		}
 	}
-	
+
 
 	//функция ищет элемент в хеш-таблице, возвращает хеш если элемент найден и -1 в противном случае
 	int find(string key) {
-		int hash = hashFunction(key, size); //получаем хеш от строки (он же индекс списка в массиве table)
+		int hash = hash_function(key, size); //получаем хеш от строки (он же индекс списка в массиве table)
 		for (size_t i = 0; i < table[hash].size(); ++i) { //идем по списку этого хеша
 			if (table[hash][i] == key) { //если нашли совпадение
 				return hash;
@@ -90,7 +90,7 @@ struct hashTable {
 
 	//функция ищет элементы, сегмента с номером	 num, возвращает список найденных элементов
 	vector<string>& find(int num) {
-		return table[(num-1)%size];
+		return table[(num - 1) % size];
 	}
 
 	void save_to_file(string fname) {
@@ -112,7 +112,7 @@ struct hashTable {
 		cout << "Вывод таблицы:\n";
 		for (int i = 0; i < size; ++i) {
 			if (table[i].size() > 0) {
-				cout << i+1 << "'й сегмент: ";
+				cout << i + 1 << "'й сегмент: ";
 				for (size_t j = 0; j < table[i].size(); ++j) {
 					cout << table[i][j] << ' ';
 				}cout << '\n';
@@ -124,7 +124,7 @@ struct hashTable {
 
 //функция изменяет ключ на следующий в лексикографическом порядке
 void next_key(string& key) {
-	int i = key.size()-1;
+	int i = key.size() - 1;
 	while (i > 0 && key[i] == '9' || key[i] == 'Z') {
 		--i;
 	}
@@ -132,7 +132,7 @@ void next_key(string& key) {
 		++key[i];
 	}
 
-	for (i = i+1; i < key.size(); ++i) {
+	for (i = i + 1; i < key.size(); ++i) {
 		if (key[i] >= '0' && key[i] <= '9') {
 			key[i] = '0';
 		}
@@ -144,7 +144,7 @@ void next_key(string& key) {
 
 
 //заполняет хеш-таблцу случайными значениями
-void hashTable_fill(hashTable& ht, string key_format) {
+void hash_table_fill(hash_table& ht, string key_format) {
 	cout << "Заполнение хеш-таблицы...\n";
 	int n = 1; //количество всех возможных ключей
 	string start_key = "";
@@ -176,7 +176,7 @@ bool check_format(string str, string format) {
 			if (str[i] < '0' || str[i] > '9') {
 				return false;
 			}
-		} 
+		}
 		else if (format[i] == 'Б') {
 			if (str[i] < 'A' || str[i] > 'Z') {
 				return false;
@@ -201,9 +201,9 @@ int main()
 	setlocale(LC_ALL, "Russian");
 
 	//считываем размер очередей
-	hashTable ht(1500);
+	hash_table ht(1500);
 	string format = "ББццББ", key;
-	hashTable_fill(ht, format);
+	hash_table_fill(ht, format);
 
 	int cmd;
 
@@ -227,7 +227,7 @@ int main()
 
 				int i = ht.find(key);
 				if (i >= 0) {
-					cout << "Элемент находится в таблице. Номер сегмента: " << i+1 << '\n';
+					cout << "Элемент находится в таблице. Номер сегмента: " << i + 1 << '\n';
 				}
 				else {
 					cout << "Элемент не найден.\n";
@@ -242,7 +242,7 @@ int main()
 				else {
 					cout << "Найденные элементы: ";
 					for (size_t i = 0; i < v.size(); ++i) {
-						cout << v[i] << (i < v.size()-1? ", ": "\n");
+						cout << v[i] << (i < v.size() - 1 ? ", " : "\n");
 					}
 				}
 			}
@@ -261,7 +261,7 @@ int main()
 				}
 				cout << "Ключ успешно добавлен.\n";
 			}
-		} 
+		}
 		else if (cmd == 3) {
 			if (!scan_key(key, format)) { continue; } //если не получилось считать ключ, пропускаем операцию
 			ht.erase(key);
